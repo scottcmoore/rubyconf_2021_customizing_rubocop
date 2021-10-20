@@ -1,0 +1,9 @@
+inherit_from: .rubocop_todo.yml
+require: ./haiku_comments.rb
+
+AllCops:
+  NewCops: enable
+  UseCache: false
+
+Style/HaikuComments:
+  Enabled: true
