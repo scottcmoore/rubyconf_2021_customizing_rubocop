@@ -26,4 +26,4 @@ This workshop will hopefully teach you:
 1. How to use RuboCop to enforce custom linting rules
 1. Drawbacks to RuboCop
 1. What is possible with RuboCop, and what isn't
-1. (Time permitting,) How to 
+1. (Time permitting,) How to run RuboCop as part of automated quality tooling (CI)
