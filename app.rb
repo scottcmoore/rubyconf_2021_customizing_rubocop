@@ -1,3 +1,8 @@
+# frozen_string_literal: true
+
+# Doing some setup
+# Setup is fine and dandy
+# Until it is not
 def setup
   puts 'setting up...'
   sleep 1
