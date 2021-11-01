@@ -23,7 +23,6 @@ You should be able to use any Ruby version greater than that. # TODO: test with 
 ### Set up the workshop app
 1. Clone the repo
 1. Run `bundle install`
-1. Run the tests #TODO: write the tests!
 
 ## Learning objectives
 This workshop will hopefully teach you:
