@@ -11,13 +11,18 @@ If time permits we will:
 - Add auto-correction to our cop
 - Add [configuration options](https://en.wikipedia.org/wiki/Tanka) to our cop
 
-## Getting started
+## Prerequisites
 This workshop assumes that you have some experience writing Ruby.
 This workshop does not assume that you have any experience with RuboCop.
-This code has been tested with Ruby 2.6.5. # TODO: test with 3 once specs are written.
 
+## Getting Ready
+You'll need Ruby installed.
+This code has been tested with Ruby 2.5.3.
+You should be able to use any Ruby version greater than that. # TODO: test with 3 once specs are written.
+
+### Set up the workshop app
 1. Clone the repo
-1. Run the tests #TODO: write the tests!
+1. Run `bundle install`
 
 ## Learning objectives
 This workshop will hopefully teach you:
