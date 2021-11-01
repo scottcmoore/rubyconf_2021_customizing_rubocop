@@ -19,7 +19,7 @@ module RuboCop
           # Commented source is a hash like:
           # { <AST> => [<Parser::Source::Comment>]}
           # Importantly, it will _only_ include the portion of the AST that has comments
-          node_with_comments = processed_source.ast_with_comments.filter { |source_node, _comment| source_node == node }
+          node_with_comments = processed_source.ast_with_comments.select { |source_node, _comment| source_node == node }
           node = node_with_comments.keys.first
 
           # There wasn't a matching node in the ast_with_comments
