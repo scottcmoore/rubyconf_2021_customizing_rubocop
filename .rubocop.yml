@@ -1,9 +1,9 @@
 inherit_from: .rubocop_todo.yml
-require: ./lib/rubocop/cop/lint/haiku_comments.rb
+# We need to tell RuboCop where to find our custom Cop.
+# (Normally we would omit the step* directory.)
+require: ./lib/rubocop/cop/style/step1/haiku_comments.rb
 
 AllCops:
   NewCops: enable
   UseCache: false
 
-Style/HaikuComments:
-  Enabled: true

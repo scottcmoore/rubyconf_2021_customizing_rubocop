@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 require 'odyssey'
+require 'pry'
 
 module RuboCop
   module Cop
     module Style
       # Custom Cop to enforce that all comments are in haiku format
       class HaikuComments < RuboCop::Cop::Cop
-        def_node_matcher :poetic_method?, '(def #poetic? _ _)'
+        # TODO: define a node matcher that calls #poetic?
 
         # on_new_investigation will run at the beginning of our lint process
         def on_new_investigation
@@ -25,27 +26,36 @@ module RuboCop
           # There wasn't a matching node in the ast_with_comments
           return if node.nil?
 
+          # TODO: skip this node if our node matcher
           return unless poetic_method? node
 
           node_name = node.method_name.to_s
           comments = node_with_comments.values.first
 
-          # If there are no comments, we don't need to lint anything.
-          return if comments.empty?
-
           return add_offense(node, message: message_for(node_name, comments)) unless comments.count == 3
 
-          first_line = clean_text(comments[0].text)
-          second_line = clean_text(comments[1].text)
-          third_line = clean_text(comments[2].text)
-
-          return add_offense(node, message: message_for(node_name, comments)) unless syllables(first_line) == 5 &&
-                                                                                     syllables(second_line) == 7 &&
-                                                                                     syllables(third_line) == 5
+          add_syllable_offenses(node_name, comments)
         end
 
         private
 
+        # Is a method poetic, and therefore should have haiku comments?
+        # This predicate method can be called inside the node_pattern DSL.
+        # A "poetic" method is one that includes 'puts' with an argument including the string 'poet'
+        def poetic?(arg)
+          arg.to_s.include? 'poet'
+        end
+
+        def add_syllable_offenses(node_name, comments)
+          syllables = []
+          comments.each do |comment|
+            syllables << syllables(comment&.text)
+          end
+
+          add_offense(node, message: message_for(node_name, comments)) unless syllables == [5, 7, 5]
+        end
+
+        # Print a message that helps the developer fix their code
         def message_for(node_name, comments)
           comment_string = comments.reduce('') { |string, comment| "#{string}#{comment.text}\n" }
           <<~MESSAGE
@@ -55,16 +65,14 @@ module RuboCop
           MESSAGE
         end
 
+        # Clean up a comment string to remove non-word characters like spaces and '#'.
         def clean_text(text)
           text.gsub(/\W\s/, '')
         end
 
+        # Return the count of syllables in a string.
         def syllables(text)
-          Odyssey.flesch_kincaid_re(text.downcase, all_stats: true)['syllable_count']
-        end
-
-        def poetic?(node_name)
-          node_name.to_s.start_with? 'poet'
+          Odyssey.flesch_kincaid_re(clean_text(text).downcase, all_stats: true)['syllable_count']
         end
 
         # Odyssey doesn't always calculate syllables correctly, so we can
