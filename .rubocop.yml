@@ -1,6 +1,6 @@
 inherit_from: .rubocop_todo.yml
 # We need to tell RuboCop where to find our custom Cop.
-# (Normally we would omit the step* directory.)
+# (Normally we would omit the step directory.)
 require: ./lib/rubocop/cop/style/step1/haiku_comments.rb
 
 AllCops:
