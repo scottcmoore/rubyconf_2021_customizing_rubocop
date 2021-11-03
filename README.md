@@ -18,7 +18,6 @@ This workshop does not assume that you have any experience with RuboCop.
 ## Getting Ready
 You'll need Ruby installed.
 This code has been tested with Ruby 2.5, 2.6, and 3.0.
-You should be able to use any Ruby version greater than that.
 
 ### Set up the workshop app
 1. Clone the repo

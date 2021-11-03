@@ -38,7 +38,7 @@ module RuboCop
           # Tag this node as failing the linting job.
           add_offense(node, message: message_for(node_name, comments)) unless comments.count == 3
 
-          # Add an offense if the comments don't have 5, 7, and 5 syllables respectively.
+          # TODO: Add an offense if the comments don't have 5, 7, and 5 syllables respectively.
         end
 
         private
@@ -60,7 +60,7 @@ module RuboCop
 
         # Return the count of syllables in a string.
         def syllables(text)
-          Odyssey.flesch_kincaid_re(text.downcase, all_stats: true)['syllable_count']
+          Odyssey.flesch_kincaid_re(clean_text(text).downcase, all_stats: true)['syllable_count']
         end
 
         # Odyssey doesn't always calculate syllables correctly, so we can

@@ -49,7 +49,7 @@ module RuboCop
         def add_syllable_offenses(node_name, comments)
           syllables = []
           comments.each do |comment|
-            syllables << syllables(comment.text)
+            syllables << syllables(comment&.text)
           end
 
           add_offense(node, message: message_for(node_name, comments)) unless syllables == [5, 7, 5]
