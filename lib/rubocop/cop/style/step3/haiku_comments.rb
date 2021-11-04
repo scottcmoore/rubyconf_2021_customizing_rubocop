@@ -9,8 +9,8 @@ module RuboCop
       class HaikuComments < RuboCop::Cop::Cop
         # Print all comments in the file and exit.
         def on_new_investigation
-          processed_source.ast_with_comments.values.first.each do |comment|
-            puts comment.text
+          processed_source.ast_with_comments.each_value.map do |comments|
+            puts comments.map(&:text)
           end
         end
 
