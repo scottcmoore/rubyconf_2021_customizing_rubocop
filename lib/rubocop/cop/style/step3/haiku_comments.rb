@@ -9,6 +9,7 @@ module RuboCop
       # Custom Cop to enforce that all comments are in haiku format
       class HaikuComments < RuboCop::Cop::Cop
         def on_new_investigation
+          # This is not an important part of the workshop!
           # Normally you'd probably want to do setup like this at a higher level than a single Cop,
           # but for the workshop we'll use this callback to do some quick hackery on our syllable
           # counting library.
@@ -19,26 +20,25 @@ module RuboCop
         # be called for all method definitions.
         def on_def(node)
           puts "Linting #{node.method_name}..."
-          #   # Commented source is a hash like:
-          #   # { <AST> => [<Parser::Source::Comment>]}
-          #   # Importantly, it will _only_ include the portion of the AST that has comments
+          
+          # This will give us a hash like: `{ <AST> => [<Parser::Source::Comment>] }`
           node_with_comments = processed_source.ast_with_comments.select { |source_node, _comment| source_node == node }
+          
+          # We can just return if the node_with_comments is nil -- that just means we're currently
+          # looking at a node without comments. For this workshop, we'll ignore those.
+          return if node_with_comments.empty?
 
-          # We can use 'first' here because the hash is always one k:v pair.
-          node = node_with_comments.keys.first
-
-          # There wasn't a matching node in the ast_with_comments; bail early.
-          return if node.nil?
-
-          node_name = node.method_name.to_s
-
-          # We can use 'first' here because the hash is always one k:v pair.
+          # The first, and only, key will be our `node`.
+          method_node = node_with_comments.keys.first
+          # The first, and only, value will be our array of comments.
           comments = node_with_comments.values.first
 
           # Tag this node as failing the linting job.
-          add_offense(node, message: message_for(node_name, comments)) unless comments.count == 3
+          add_offense(method_node, message: message_for(method_node.method_name.to_s, comments)) unless comments.count == 3
 
           # TODO: Add an offense if the comments don't have 5, 7, and 5 syllables respectively.
+          # Each item in the comments array should respond to `text`; we can use the `syllables` private
+          # method to count syllables in the text.
         end
 
         private

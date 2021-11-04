@@ -15,6 +15,7 @@ module RuboCop
         # (use backtick and parens to search children), where the child is a send to any receiver with message puts with
         # args that are `#poetic_arg?`"
         # def_node_matcher :very_poetic_method?, <YOUR PATTERN HERE>
+        def_node_matcher :very_poetic_method?, '(def ... `(... :puts #poetic_arg?))'
 
         # on_new_investigation will run at the beginning of our lint process
         def on_new_investigation
@@ -29,8 +30,6 @@ module RuboCop
           # We can just return if the node_with_comments is nil -- that just means we're currently
           # looking at a node without comments. For this workshop, we'll ignore those.
           return if node_with_comments.empty?
-
-          return if node_with_comments.empty? # There wasn't a matching node in the ast_with_comments
           
           return unless poetic_method?(node) || very_poetic_method?(node)
 
@@ -52,7 +51,7 @@ module RuboCop
         # You call this by _replacing_ the item in the pattern you want to 
         # pass to this method.
         # A 'poetic' method beings with 'poetic_'
-        def poetic?(arg)
+        def poetic?(method_name)
           method_name.to_s.start_with? 'poet'
         end
 
