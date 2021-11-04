@@ -8,40 +8,62 @@ module RuboCop
     module Style
       # Custom Cop to enforce that all comments are in haiku format
       class HaikuComments < RuboCop::Cop::Cop
+        # TODO: define a node matcher that calls #poetic_method?
+        # It should match "a def node, that responds to `#poetic_method?` with true, with any number of args"
+        # def_node_matcher :poetic_method?, <YOUR PATTERN HERE>
+        
+
+        # on_new_investigation will run at the beginning of our lint process
         def on_new_investigation
-          # Normally you'd probably want to do setup like this at a higher level than a single Cop,
-          # but for the workshop we'll use this callback to do some quick hackery on our syllable
-          # counting library.
           define_syllable_counts
         end
 
-        # This callback will be called on all instances of `def` -- i.e., it will
-        # be called for all method definitions.
+        # Only runs on method definitions
         def on_def(node)
           puts "Linting #{node.method_name}..."
-          #   # Commented source is a hash like:
-          #   # { <AST> => [<Parser::Source::Comment>]}
-          #   # Importantly, it will _only_ include the portion of the AST that has comments
+          
+          # This will give us a hash like: `{ <AST> => [<Parser::Source::Comment>] }`
           node_with_comments = processed_source.ast_with_comments.select { |source_node, _comment| source_node == node }
+          
+          # We can just return if the node_with_comments is nil -- that just means we're currently
+          # looking at a node without comments. For this workshop, we'll ignore those.
+          return if node_with_comments.empty?
 
-          # We can use 'first' here because the hash is always one k:v pair.
-          node = node_with_comments.keys.first
+          # TODO: return if the node is not a poetic method (poetic_method? is our node pattern matcher and accepts the node)
+          
 
-          # There wasn't a matching node in the ast_with_comments; bail early.
-          return if node.nil?
-
-          node_name = node.method_name.to_s
-
-          # We can use 'first' here because the hash is always one k:v pair.
+          # The first, and only, key will be our `node`.
+          method_node = node_with_comments.keys.first
+          # The first, and only, value will be our array of comments.
           comments = node_with_comments.values.first
-
+          
           # Tag this node as failing the linting job.
-          add_offense(node, message: message_for(node_name, comments)) unless comments.count == 3
+          add_offense(method_node, message: message_for(method_node.method_name.to_s, comments)) unless comments.count == 3
 
-          # TODO: Add an offense if the comments don't have 5, 7, and 5 syllables respectively.
+          # Each item in the comments array should respond to `text`; we can use the `syllables` private
+          # method to count syllables in the text.
+          add_syllable_offenses(method_node, comments)
         end
 
         private
+
+        # Is a method poetic, and therefore should have haiku comments?
+        # This method can be called inside the node_pattern DSL.
+        # You call this by _replacing_ the item in the pattern you want to 
+        # pass to this method.
+        # A 'poetic' method beings with 'poetic_'
+        def poetic?(method_name)
+          method_name.to_s.start_with? 'poet'
+        end
+
+        def add_syllable_offenses(node, comments)
+          syllables = []
+          comments.each do |comment|
+            syllables << syllables(comment&.text)
+          end
+
+          add_offense(node, message: message_for(node.method_name.to_s, comments)) unless syllables == [5, 7, 5]
+        end
 
         # Print a message that helps the developer fix their code
         def message_for(node_name, comments)
