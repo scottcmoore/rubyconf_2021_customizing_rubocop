@@ -8,7 +8,7 @@ module RuboCop
     module Style
       # Custom Cop to enforce that all comments are in haiku format
       class HaikuComments < RuboCop::Cop::Cop
-        # It should match "a def node, that responds to `#poetic_method?` with true, with any number of args"
+        # It should match "a def node, that responds to `#poetic?` with true, with any number of args"
         def_node_matcher :poetic_method?, '(def #poetic? ...)'
 
         # It should match "a def node, of any name and with any args, with any children 
@@ -52,7 +52,7 @@ module RuboCop
         # pass to this method.
         # A 'poetic' method beings with 'poetic_'
         def poetic?(method_name)
-          method_name.to_s.start_with? 'poet'
+          method_name.to_s.start_with? 'poetic_'
         end
 
         # Is this method really poetic, and therefore should have haiku comments?

@@ -47,7 +47,7 @@ See if you can get your Cop to print all comments from the file when you run `ru
 Once it does, you're ready for Step 2. Close your Step 1 file and open `lib/rubocop/style/step2/haiku_comments.rb`.
 
 ## Step 2
-First run ` ./switch_to_step.sh 2` from the project root to point your `.rubocop.yml` to the Step 2 directory.
+First run `./switch_to_step.sh 2` from the project root to point your `.rubocop.yml` to the Step 2 directory.
 
 Now that we can see the comments for the whole file, let's look at comments associated with a node.
 In particular, we're going to limit our linting only to method definitions.
@@ -64,7 +64,7 @@ Try to get your Cop to add offenses to any method definitions that have comments
 Once you reach that point, you are ready for Step 3. Close your Step 2 file and open `lib/rubocop/style/step3/haiku_comments.rb`.
 
 ## Step 3
-First run ` ./switch_to_step.sh 3` from the project root to point your `.rubocop.yml` to the Step 3 directory.
+First run `./switch_to_step.sh 3` from the project root to point your `.rubocop.yml` to the Step 3 directory.
 
 Now that we are successfully enforcing that comments are three lines, we can use a gem called Odyssey to count syllables on each line.
 
@@ -74,7 +74,7 @@ Update your Cop to add an offense to method nodes whose comments are not 5,7, an
 Once you've done that, you're ready to move to Step 4. Close your Step 3 file and open `lib/rubocop/style/step4/haiku_comments.rb`.
 
 ## Step 4
-First run ` ./switch_to_step.sh 4` from the project root to point your `.rubocop.yml` to the Step 4 directory.
+First run `./switch_to_step.sh 4` from the project root to point your `.rubocop.yml` to the Step 4 directory.
 
 Now we are enforcing that if methods have comments, those comments must be three lines of five, seven, and five syllables.
 However, what if we only want to enforce that rule for certain types of methods?
@@ -83,6 +83,9 @@ Our app.rb has some methods that are poetic, which means that their method name 
 
 We are going to use RuboCop's [node pattern DSL](https://docs.rubocop.org/rubocop-ast/node_pattern.html) to limit which nodes we want to flag.
 The node pattern DSL lets us define an AST pattern to match.
+
+########### I think it's worth explicitly calling out the `def_node_matcher` macro here in the instructions because I totally missed it in
+########### haiku_comments.rb. 
 
 For example:
 ```
@@ -100,7 +103,7 @@ The underscores represent "any single item". We can also name them more clearly:
 ```
 (send _puts_receiver :puts _puts_argument)
 ```
-In this example, `_receiver_of_puts` is `nil`, and `_argument_to_puts` is "hello world".
+In this example, `_receiver_of_puts` is `nil`, and `_puts_argument` is "hello world".
 
 At this point in the workshop, rather than replicate the node pattern docs here, we're going to use [a fun tool](http://nodepattern.herokuapp.com/) to see some examples of the node pattern DSL, and to work towards one that will help us target poetic methods.
 
@@ -108,13 +111,19 @@ Although this really isn't the simplest way to examine a method's name, we're sh
 
 The main difficulty here is going to be replacing the right item in the pattern with a call to our helper method.
 
-Once you are only linting methods that start with poetic_, you're ready for Step 5.
+Once you are only linting methods that start with 'poetic_', you're ready for Step 5.
 
 You're ready for Step 5. Close your Step 4 file and open `lib/rubocop/style/step5/haiku_comments.rb`.
 
 ## Step 5
+First run `./switch_to_step.sh 5` from the project root to point your `.rubocop.yml` to the Step 5 directory.
 
 To dig into node patterns a bit more, we're going to match one more kind of poetic method in our cop. This time, we're looking for methods that contain a `puts` with an argument that contains the string 'poet'.
+
+########### I really like how you broke up the matching pattern!!! Super helpful!! I think it would help to show an example of
+###########  what you're trying to match might look like (like you did in step 4) and, bonus(!), breaking it apart like you 
+########### did for here. Here's one from #cleanup:
+########### (def :cleanup (args) (begin (send nil :puts (str "cleaning up the poetry...")) 
 
 In order to match this, we're going to need to dig into the method body.
 
@@ -139,3 +148,8 @@ Take a shot at improving this node pattern. Once your cop lints methods that eit
 - include a `puts` with an argument that contains 'poet'
 
 You're done with the workshop! Thanks for much for reading this far!
+
+
+########## Add something about going to step6/haiku_comments to compare your final cop.
+########## Also, might suggest as a final step to haiku-ify all of the comments in app.rb
+########## and run your cop against it to see all of the offenses cleared.
