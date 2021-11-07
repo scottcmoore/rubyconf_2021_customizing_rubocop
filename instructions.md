@@ -103,7 +103,7 @@ The underscores represent "any single item". We can also name them more clearly:
 ```
 (send _puts_receiver :puts _puts_argument)
 ```
-In this example, `_receiver_of_puts` is `nil`, and `_puts_argument` is "hello world".
+In this example, `_puts_receiver` is `nil`, and `_puts_argument` is "hello world".
 
 At this point in the workshop, rather than replicate the node pattern docs here, we're going to use [a fun tool](http://nodepattern.herokuapp.com/) to see some examples of the node pattern DSL, and to work towards one that will help us target poetic methods.
 
