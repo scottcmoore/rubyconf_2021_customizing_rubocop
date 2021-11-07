@@ -1,9 +1,6 @@
 # We need to tell RuboCop where to find our custom Cop.
-# (Normally we would omit the step6 directory.)
-require: ./lib/rubocop/cop/style/step6/haiku_comments.rb
-########## do you want this to start on step6 or step 1?
-########## if you want it to start with step6, probably add something to the instructions
-########## to switch to step6 1 in step 1.
+# (Normally we would omit the step1 directory.)
+require: ./lib/rubocop/cop/style/step1/haiku_comments.rb
 
 AllCops:
   Exclude:
