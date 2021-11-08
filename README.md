@@ -30,3 +30,13 @@ This workshop will hopefully teach you:
 1. How to use RuboCop to enforce custom linting rules
 1. Drawbacks to RuboCop
 1. What is possible with RuboCop, and what isn't
+
+
+## Resources
+
+These are some links to useful reading about some of the topics we've touched on.
+
+- [parser, the library RuboCop uses to get the AST](https://github.com/whitequark/parser)
+- [a great evilmartians blog post, has links to examples of cops from many teams](https://evilmartians.com/chronicles/custom-cops-for-rubocop-an-emergency-service-for-your-codebase)
+- [node pattern debugger](https://github.com/marcandre/np)
+- [ast explorer, another cool interactive AST tool but unfortunately no Ruby support](https://astexplorer.net/)
