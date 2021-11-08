@@ -9,7 +9,7 @@ We're going to focus on making small changes in each step. As we move from step 
 Each "step" is just a different directory to house your code.
 "Switching steps" just means changing a path in `.rubocop.yml` to point to a different directory.
 
-You can run `./switch_to_step.sh <a step number from 1-5>` to make this change.
+You can run `./switch_to_step.sh <a step number from 1-6>` to make this change.
 
 You can see if your cop is running correctly by running `rubocop --debug app.rb`.
 
@@ -24,7 +24,7 @@ For this step, we want to print the comments we find in the file, and exit. In o
 
 RuboCop has several callbacks that get called in the course of a run, like:
 - on_new_investigation: this gets called per-file, as RuboCop begins linting the file.
-- on_send: this gets called as RuboCop parses a method call.
+- on_send: this gets called as RuboCop parses any message being sent to an object.
 
 Right now, we want to just look at comments across the _entire_ file, so we can define an `on_new_investigation` method to hook into that callback.
 Add some code to your Cop like:
@@ -52,9 +52,7 @@ First run `./switch_to_step.sh 2` from the project root to point your `.rubocop.
 Now that we can see the comments for the whole file, let's look at comments associated with a node.
 In particular, we're going to limit our linting only to method definitions.
 
-In this step we're going to start using a different callback, `on_def`, which will run on each instance of `def` in the file. 
-
-(Side note, `on_send` is another big one, and is run for all method calls.)
+In this step we're going to start using a different callback, `on_def`, which will run on all method definitions in our source. 
 
 We can make some progress towards our linting goal here, by checking for methods with comments that aren't three lines.
 
@@ -122,14 +120,23 @@ First run `./switch_to_step.sh 5` from the project root to point your `.rubocop.
 
 To dig into node patterns a bit more, we're going to match one more kind of poetic method in our cop. This time, we're looking for methods that contain a `puts` with an argument that contains the string 'poet'.
 
-########### I really like how you broke up the matching pattern!!! Super helpful!! I think it would help to show an example of
-###########  what you're trying to match might look like (like you did in step 4) and, bonus(!), breaking it apart like you 
-########### did for here. Here's one from #cleanup:
-########### (def :cleanup (args) (begin (send nil :puts (str "cleaning up the poetry...")) 
-
 In order to match this, we're going to need to dig into the method body.
 
-You can do so with:
+The `cleanup` method is an example of what we're looking for. `ruby-parse` tells us it will be parsed as:
+```
+(def :cleanup # A def node, with any name
+    (args) # With any single arg
+    (begin
+      (send nil :puts # Having in its descendants a send of :puts, against any receiver
+        (str "cleaning up the poetry...")) # With an argument containing "poet"
+      (send nil :sleep
+        (int 1))
+      (send nil :puts
+        (str "cleanup complete"))))
+```
+
+We can use the backtick to search a node and all its descendants. Our node pattern ends up looking like:
+
 ```
  [0] [1]          [2]          [3]  [4] [5]            [6]   [7]
 (def _method_name _method_arg1 `  ( send _puts_receiver :puts _puts_arg ) )
@@ -141,17 +148,16 @@ You can do so with:
 - 4 - a send
 - 5 - against any receiver
 - 6 - of a `puts`
-- 7 - with any single arg.
+- 7 - with any single arg (we still need to check if it contains "poet").
 
-There are a couple things missing here though; one is that we aren't calling our helper method to determine if the method is poetic. The second is that this is fairly brittle and would only work for instances with single arguments. 
+There are a couple things missing here though; one is that we aren't calling our helper method to determine if the method is poetic. The second is that this is fairly brittle and would only work for methods with single arguments.
 
-Take a shot at improving this node pattern. Once your cop lints methods that either:
+Take a shot at improving this node pattern. See if you can reach a point where your cop lints methods that either:
 - have a name staring with 'poetic_' or
 - include a `puts` with an argument that contains 'poet'
 
-You're done with the workshop! Thanks for much for reading this far!
+You can take a look at the cop in the step6 directory for a working example.
 
+You should be able to update the comments in app.rb to have 5, 7, and 5 syllables, and see your cop pass.
 
-########## Add something about going to step6/haiku_comments to compare your final cop.
-########## Also, might suggest as a final step to haiku-ify all of the comments in app.rb
-########## and run your cop against it to see all of the offenses cleared.
+At this point you are done with the workshop. Thanks for reading this far! If you have questions or find issues with the workshop code, please ask in the conference Discord channel for the workshop or raise an issue in the repo. If you're reading this outside of RubyConf, please raise an issue in the repo. 
