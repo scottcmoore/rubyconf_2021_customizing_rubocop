@@ -84,8 +84,7 @@ Our app.rb has some methods that are poetic, which means that their method name 
 We are going to use RuboCop's [node pattern DSL](https://docs.rubocop.org/rubocop-ast/node_pattern.html) to limit which nodes we want to flag.
 The node pattern DSL lets us define an AST pattern to match.
 
-########### I think it's worth explicitly calling out the `def_node_matcher` macro here in the instructions because I totally missed it in
-########### haiku_comments.rb. 
+We pass this pattern to `def_node_matcher`, along with a method name, and RuboCop will define a moethod we can use to match against nodes.
 
 For example:
 ```
@@ -95,15 +94,18 @@ Will be parsed into:
 ```
 (send nil :puts (str "hello world"))
 ```
-And we can write a node pattern that will match it.
+And we can write a node pattern that will match it, passing that to `def_node_matcher`:
 ```
-(send _ :puts _)
+def_node_matcher :is_puts? `(send _ :puts _)`
 ```
-The underscores represent "any single item". We can also name them more clearly:
+The underscores represent "any single item". We can also name them more clearly. In this example, `_puts_receiver` is `nil`, and `_puts_argument` is "hello world":
 ```
-(send _puts_receiver :puts _puts_argument)
+def_node_matcher :is_puts? (send _puts_receiver :puts _puts_argument)
 ```
-In this example, `_puts_receiver` is `nil`, and `_puts_argument` is "hello world".
+This gives us a method we can call:
+```
+is_puts? node # returns true for the node `puts 'hello world'
+```
 
 At this point in the workshop, rather than replicate the node pattern docs here, we're going to use [a fun tool](http://nodepattern.herokuapp.com/) to see some examples of the node pattern DSL, and to work towards one that will help us target poetic methods.
 
