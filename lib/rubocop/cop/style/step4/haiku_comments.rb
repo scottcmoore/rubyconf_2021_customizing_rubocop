@@ -9,7 +9,7 @@ module RuboCop
       # Custom Cop to enforce that all comments are in haiku format
       class HaikuComments < RuboCop::Cop::Cop
         # TODO: define a node matcher that calls #poetic_method?
-        # It should match "a def node, that responds to `#poetic_method?` with true, with any number of args"
+        # It should match "a def node, that responds to `#poetic?` with true, with any number of args"
         # def_node_matcher :poetic_method?, <YOUR PATTERN HERE>
         
 
@@ -30,7 +30,7 @@ module RuboCop
           return if node_with_comments.empty?
 
           # TODO: return if the node is not a poetic method (poetic_method? is our node pattern matcher and accepts the node)
-          
+          return unless poetic?(node.method_name)
 
           # The first, and only, key will be our `node`.
           method_node = node_with_comments.keys.first
@@ -53,7 +53,7 @@ module RuboCop
         # pass to this method.
         # A 'poetic' method beings with 'poetic_'
         def poetic?(method_name)
-          method_name.to_s.start_with? 'poet'
+          method_name.to_s.start_with? 'poetic_'
         end
 
         def add_syllable_offenses(node, comments)

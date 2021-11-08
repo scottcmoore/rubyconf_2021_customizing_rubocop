@@ -2,7 +2,6 @@
 
 # Doing some setup
 # Setup is fine and dandy
-
 # Until it's not
 def poetic_setup
   puts 'setting up the poem slam...'
@@ -29,6 +28,6 @@ def cleanup
   puts 'cleanup complete'
 end
 
-setup
-execute
+poetic_setup
+poetic_execute
 cleanup
